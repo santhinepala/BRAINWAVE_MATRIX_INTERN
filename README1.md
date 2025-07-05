@@ -3,142 +3,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fashion Shop</title>
+  <title>Simple E-Commerce Website</title>
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f2f5;
+      padding: 0;
+      font-family: Arial, sans-serif;
     }
+
     header {
-      background-color: #222;
-      color: white;
-      padding: 1rem;
+      background-color: #333;
+      color: #fff;
+      padding: 1em;
       text-align: center;
     }
+
     nav {
-      background: #333;
-      display: flex;
-      justify-content: center;
-      padding: 0.5rem;
+      background: #444;
+      padding: 1em;
+      text-align: center;
     }
+
     nav a {
-      color: #fff;
-      text-decoration: none;
+      color: white;
       margin: 0 15px;
+      text-decoration: none;
     }
-    .products {
-      display: flex;
-      flex-wrap: wrap;
+
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
       padding: 20px;
-      justify-content: center;
     }
-    .card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      overflow: hidden;
-      width: 200px;
-      transition: transform 0.2s ease;
+
+    .product {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+      background-color: #f9f9f9;
     }
-    .card:hover {
-      transform: scale(1.05);
-    }
-    .card img {
+
+    .product img {
       width: 100%;
-      height: 180px;
+      height: 200px;
       object-fit: cover;
     }
-    .card-body {
-      padding: 15px;
-      text-align: center;
-    }
-    .card-body h4 {
-      margin: 10px 0;
-    }
-    .card-body button {
-      background-color: #007bff;
-      border: none;
+
+    .product button {
+      background-color: #28a745;
       color: white;
-      padding: 10px 15px;
+      border: none;
+      padding: 10px;
       cursor: pointer;
-      border-radius: 5px;
+      margin-top: 10px;
     }
-    .cart-section {
-      background: #fff;
+
+    .cart {
+      background-color: #f1f1f1;
       padding: 20px;
-      margin: 20px;
-      border-radius: 10px;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Fashion Shop</h1>
-    <p>Trendy Clothes at Best Prices</p>
+    <h1>My E-Commerce Store</h1>
   </header>
   <nav>
-    <a href="#">Home</a>
-    <a href="#">New Arrivals</a>
-    <a href="#">Cart</a>
+    <a href="#home">Home</a>
+    <a href="#products">Products</a>
+    <a href="#cart">Cart</a>
   </nav>
 
-  <div class="products">
-    <div class="card">
-      <img src="https://via.placeholder.com/200x180?text=T-Shirt" alt="T-Shirt">
-      <div class="card-body">
-        <h4>T-Shirt</h4>
+  <main>
+    <section class="product-list" id="products">
+      <div class="product">
+        <img src="https://via.placeholder.com/200" alt="Product 1">
+        <h3>Product 1</h3>
         <p>₹499</p>
-        <button onclick="addToCart('T-Shirt', 499)">Add to Cart</button>
+        <button onclick="addToCart('Product 1', 499)">Add to Cart</button>
       </div>
-    </div>
-    <div class="card">
-      <img src="https://via.placeholder.com/200x180?text=Jeans" alt="Jeans">
-      <div class="card-body">
-        <h4>Jeans</h4>
-        <p>₹999</p>
-        <button onclick="addToCart('Jeans', 999)">Add to Cart</button>
+      <div class="product">
+        <img src="https://via.placeholder.com/200" alt="Product 2">
+        <h3>Product 2</h3>
+        <p>₹699</p>
+        <button onclick="addToCart('Product 2', 699)">Add to Cart</button>
       </div>
-    </div>
-    <div class="card">
-      <img src="https://via.placeholder.com/200x180?text=Jacket" alt="Jacket">
-      <div class="card-body">
-        <h4>Jacket</h4>
-        <p>₹1499</p>
-        <button onclick="addToCart('Jacket', 1499)">Add to Cart</button>
+      <div class="product">
+        <img src="https://via.placeholder.com/200" alt="Product 3">
+        <h3>Product 3</h3>
+        <p>₹899</p>
+        <button onclick="addToCart('Product 3', 899)">Add to Cart</button>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="cart-section">
-    <h2>Shopping Cart</h2>
-    <ul id="cartList"></ul>
-    <h3 id="cartTotal">Total: ₹0</h3>
-  </div>
+    <section class="cart" id="cart">
+      <h2>Shopping Cart</h2>
+      <ul id="cart-items"></ul>
+      <h3 id="total">Total: ₹0</h3>
+    </section>
+  </main>
 
   <script>
-    let cart = [];
+    const cartItems = [];
 
-    function addToCart(item, price) {
-      cart.push({ item, price });
-      updateCart();
+    function addToCart(productName, price) {
+      cartItems.push({ name: productName, price: price });
+      renderCart();
     }
 
-    function updateCart() {
-      const list = document.getElementById('cartList');
-      const totalText = document.getElementById('cartTotal');
-      list.innerHTML = '';
+    function renderCart() {
+      const cartList = document.getElementById('cart-items');
+      cartList.innerHTML = '';
       let total = 0;
 
-      cart.forEach(product => {
+      cartItems.forEach(item => {
         const li = document.createElement('li');
-        li.textContent = `${product.item} - ₹${product.price}`;
-        list.appendChild(li);
-        total += product.price;
+        li.textContent = `${item.name} - ₹${item.price}`;
+        cartList.appendChild(li);
+        total += item.price;
       });
 
-      totalText.textContent = `Total: ₹${total}`;
+      document.getElementById('total').textContent = `Total: ₹${total}`;
     }
   </script>
 </body>
